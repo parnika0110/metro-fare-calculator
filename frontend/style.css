@@ -1,0 +1,84 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  margin: 0;
+}
+
+.container {
+  width: 380px;
+  margin: 40px auto;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(15px);
+  padding: 25px;
+  border-radius: 16px;
+  color: white;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  background: #00c6ff;
+  color: white;
+  cursor: pointer;
+}
+
+.input-box {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  background: white;
+  color: black;
+  border-radius: 6px;
+  display: none;
+  z-index: 10;
+}
+
+.dropdown li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.dropdown li:hover {
+  background: #eee;
+}
+
+.result {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#routeContainer {
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.station {
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: white;
+}
+
+.purple { background: #6a1b9a; }
+.green { background: #2e7d32; }
+.yellow { background: #f9a825; color: black; }
+.blue { background: #1565c0; }
+.pink { background: #c2185b; }
+
+.interchange {
+  box-shadow: 0 0 0 2px white;
+}

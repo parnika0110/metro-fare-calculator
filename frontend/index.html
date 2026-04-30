@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Metro Fare Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="container">
+  <h1>🚇 Metro Fare Calculator</h1>
+
+  <label>From Station</label>
+  <div class="input-box">
+    <input type="text" id="sourceInput" placeholder="Search or select..." />
+    <ul id="sourceList" class="dropdown"></ul>
+  </div>
+
+  <label>To Station</label>
+  <div class="input-box">
+    <input type="text" id="destInput" placeholder="Search or select..." />
+    <ul id="destList" class="dropdown"></ul>
+  </div>
+
+  <label>Passengers</label>
+  <input type="number" id="passengers" min="1" value="1" />
+
+  <label>Card Type</label>
+  <select id="cardType">
+    <option value="token">Token</option>
+    <option value="smart">Smart Card</option>
+    <option value="ncmc">NCMC Card</option>
+  </select>
+
+  <button onclick="calculate()">Calculate Fare</button>
+
+  <div class="result">
+    <h2>Total Fare: ₹ <span id="fare">0</span></h2>
+    <p id="info"></p>
+    <div id="routeContainer"></div>
+  </div>
+</div>
+<script src="data.js"></script>
+<script src="services/GraphService.js"></script>
+<script src="services/FareService.js"></script>
+<script src="services/RouteService.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
