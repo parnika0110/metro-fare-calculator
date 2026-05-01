@@ -4,7 +4,6 @@ class RouteService {
     this.graphService = graphService;
   }
 
-  // DFS to find ALL routes (limit depth to avoid infinite loops)
   findAllRoutes(start, end, maxDepth = 40) {
     let results = [];
 

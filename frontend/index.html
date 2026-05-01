@@ -1,45 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Metro Fare Calculator</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Namma Metro · Fare Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
+<div class="app-root">
 
-<div class="container">
-  <h1>🚇 Metro Fare Calculator</h1>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="6" width="18" height="13" rx="2.5" stroke="#2563EB" stroke-width="2"/>
+          <path d="M3 10h18M7 19v2M17 19v2" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="8" cy="14.5" r="1.5" fill="#2563EB"/>
+          <circle cx="16" cy="14.5" r="1.5" fill="#2563EB"/>
+        </svg>
+        <span class="brand-name">BMRCL</span>
+        <span class="brand-sep">·</span>
+        <span class="brand-city">Bengaluru</span>
+      </div>
+    </div>
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="calculator">Fare Calculator</button>
+      <button class="tab-btn" data-tab="planner">Trip Planner</button>
+      <button class="tab-btn" data-tab="pass">Monthly Pass</button>
+      <button class="tab-btn" data-tab="fares">Fare Chart</button>
+    </nav>
+    <div class="topbar-right">
+      <span class="hdr-chip" id="timeBadge"></span>
+      <span class="hdr-chip peak-chip" id="peakBadge"></span>
+    </div>
+  </header>
 
-  <label>From Station</label>
-  <div class="input-box">
-    <input type="text" id="sourceInput" placeholder="Search or select..." />
-    <ul id="sourceList" class="dropdown"></ul>
-  </div>
+  <div class="content-shell">
 
-  <label>To Station</label>
-  <div class="input-box">
-    <input type="text" id="destInput" placeholder="Search or select..." />
-    <ul id="destList" class="dropdown"></ul>
-  </div>
+    <!-- CALCULATOR TAB -->
+    <div class="tab-panel active" id="tab-calculator">
+      <div class="two-col">
 
-  <label>Passengers</label>
-  <input type="number" id="passengers" min="1" value="1" />
+        <div class="left-col">
+          <p class="eyebrow">Plan your journey</p>
+          <h1 class="page-title">Calculate Fare</h1>
 
-  <label>Card Type</label>
-  <select id="cardType">
-    <option value="token">Token</option>
-    <option value="smart">Smart Card</option>
-    <option value="ncmc">NCMC Card</option>
-  </select>
+          <div class="card form-card">
+            <div class="station-block">
+              <div class="station-row-item">
+                <div class="dot green-dot"></div>
+                <div class="grow">
+                  <label class="lbl">From</label>
+                  <div class="input-wrap">
+                    <input type="text" id="sourceInput" placeholder="Search origin station…" autocomplete="off"/>
+                    <ul id="sourceList" class="dropdown"></ul>
+                  </div>
+                </div>
+              </div>
+              <button class="swap-btn" id="swapBtn" title="Swap">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+              </button>
+              <div class="station-row-item">
+                <div class="dot red-dot"></div>
+                <div class="grow">
+                  <label class="lbl">To</label>
+                  <div class="input-wrap">
+                    <input type="text" id="destInput" placeholder="Search destination station…" autocomplete="off"/>
+                    <ul id="destList" class="dropdown"></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-  <button onclick="calculate()">Calculate Fare</button>
+            <div class="rule"></div>
 
-  <div class="result">
-    <h2>Total Fare: ₹ <span id="fare">0</span></h2>
-    <p id="info"></p>
-    <div id="routeContainer"></div>
+            <div class="opts-row">
+              <div>
+                <label class="lbl">Passengers</label>
+                <div class="counter">
+                  <button class="c-btn" onclick="adjustPassengers(-1)">−</button>
+                  <span id="passengerCount">1</span>
+                  <button class="c-btn" onclick="adjustPassengers(1)">+</button>
+                </div>
+                <input type="hidden" id="passengers" value="1"/>
+              </div>
+              <div style="flex:1">
+                <label class="lbl">Ticket Type</label>
+                <div class="ticket-grp">
+                  <label class="tkt"><input type="radio" name="cardType" value="token" checked/><span>Token</span></label>
+                  <label class="tkt"><input type="radio" name="cardType" value="smart"/><span>Smart Card</span></label>
+                  <label class="tkt"><input type="radio" name="cardType" value="ncmc"/><span>NCMC</span></label>
+                </div>
+              </div>
+            </div>
+
+            <button class="primary-btn" onclick="calculate()">
+              Calculate Fare
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+
+          <div id="recentWrap" style="display:none">
+            <p class="eyebrow" style="margin-top:24px">Recent Trips</p>
+            <div id="recentList" class="recent-list"></div>
+          </div>
+        </div>
+
+        <div class="right-col">
+          <div class="empty-state" id="emptyState">
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.3"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 19v2M17 19v2"/><circle cx="8" cy="14.5" r="1"/><circle cx="16" cy="14.5" r="1"/></svg>
+            <p>Select stations to see your<br/>route and estimated fare</p>
+          </div>
+
+          <div id="fareHero" class="fare-hero" style="display:none">
+            <div class="fare-hero-left">
+              <div class="fare-tag">Total Fare</div>
+              <div class="fare-big">₹<span id="fare">0</span></div>
+              <div class="fare-note" id="fareNote"></div>
+            </div>
+            <div class="fare-stats">
+              <div class="fstat"><div class="fstat-v" id="statStops">–</div><div class="fstat-l">Stops</div></div>
+              <div class="fstat"><div class="fstat-v" id="statChanges">–</div><div class="fstat-l">Changes</div></div>
+              <div class="fstat"><div class="fstat-v" id="statTime">–</div><div class="fstat-l">Est. Time</div></div>
+              <div class="fstat"><div class="fstat-v" id="statPer">–</div><div class="fstat-l">Per Person</div></div>
+            </div>
+          </div>
+
+          <div class="card route-card" id="routeCard" style="display:none">
+            <div class="route-card-hdr">
+              <span class="card-title">Route</span>
+              <div class="route-actions">
+                <button class="icon-btn" onclick="speakRoute()" title="Read route aloud">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                </button>
+
+                 <button class="icon-btn" onclick="stopVoice()" title="Stop voice">
+              ⏹
+                </button>
+                <button class="icon-btn" onclick="exportTicket()" title="Export ticket">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+              </div>
+            </div>
+            <div id="routeContainer" class="route-trail"></div>
+            <div id="interchangeRow" class="interchange-row"></div>
+          </div>
+
+          <div class="card" id="altCard" style="display:none;padding:18px 20px">
+            <div class="card-title" style="margin-bottom:12px">Alternate Routes</div>
+            <div id="altList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLANNER TAB -->
+    <div class="tab-panel" id="tab-planner">
+      <div class="tab-inner">
+        <p class="eyebrow">Time your commute</p>
+        <h2 class="page-title">Trip Planner</h2>
+        <div class="card form-card" style="max-width:480px">
+          <label class="lbl">Departure Time</label>
+          <input type="time" id="departureTime" class="time-input"/>
+          <label class="lbl" style="margin-top:14px">From</label>
+          <div class="input-wrap" style="margin-top:6px">
+            <input type="text" id="plannerSrc" placeholder="Origin station…" autocomplete="off"/>
+            <ul id="plannerSrcList" class="dropdown"></ul>
+          </div>
+          <label class="lbl" style="margin-top:14px">To</label>
+          <div class="input-wrap" style="margin-top:6px">
+            <input type="text" id="plannerDst" placeholder="Destination station…" autocomplete="off"/>
+            <ul id="plannerDstList" class="dropdown"></ul>
+          </div>
+          <button class="primary-btn" style="margin-top:20px" onclick="planTrip()">Plan Trip</button>
+        </div>
+        <div id="plannerResult" style="display:none;margin-top:20px">
+          <div class="info-grid">
+            <div class="info-tile"><div class="it-v" id="ptDepart">–</div><div class="it-l">Departs</div></div>
+            <div class="info-tile"><div class="it-v" id="ptArrive">–</div><div class="it-l">Arrives (est.)</div></div>
+            <div class="info-tile"><div class="it-v" id="ptDur">–</div><div class="it-l">Duration</div></div>
+            <div class="info-tile"><div class="it-v" id="ptMode">–</div><div class="it-l">Hour Type</div></div>
+          </div>
+          <div class="tip-box" id="ptTip"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASS TAB -->
+    <div class="tab-panel" id="tab-pass">
+      <div class="tab-inner">
+        <p class="eyebrow">Save on your commute</p>
+        <h2 class="page-title">Monthly Pass Estimator</h2>
+        <div class="card form-card" style="max-width:480px">
+          <label class="lbl">Home Station</label>
+          <div class="input-wrap" style="margin-top:6px">
+            <input type="text" id="passSrc" placeholder="Home station…" autocomplete="off"/>
+            <ul id="passSrcList" class="dropdown"></ul>
+          </div>
+          <label class="lbl" style="margin-top:14px">Work Station</label>
+          <div class="input-wrap" style="margin-top:6px">
+            <input type="text" id="passDst" placeholder="Work station…" autocomplete="off"/>
+            <ul id="passDstList" class="dropdown"></ul>
+          </div>
+          <label class="lbl" style="margin-top:14px">Working Days / Month</label>
+          <div class="counter" style="margin-top:6px">
+            <button class="c-btn" onclick="adjustDays(-1)">−</button>
+            <span id="workDaysCount">22</span>
+            <button class="c-btn" onclick="adjustDays(1)">+</button>
+          </div>
+          <input type="hidden" id="workDays" value="22"/>
+          <button class="primary-btn" style="margin-top:20px" onclick="estimatePass()">Calculate Savings</button>
+        </div>
+        <div id="passResult" style="display:none;margin-top:20px">
+          <div class="info-grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="info-tile"><div class="it-v" id="prToken">–</div><div class="it-l">Token Cost/month</div></div>
+            <div class="info-tile blue-tile"><div class="it-v" id="prPass">–</div><div class="it-l">Monthly Pass</div></div>
+            <div class="info-tile green-tile"><div class="it-v" id="prSaved">–</div><div class="it-l">You Save</div></div>
+          </div>
+          <div class="tip-box" id="passTip"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FARE CHART TAB -->
+    <div class="tab-panel" id="tab-fares">
+      <div class="tab-inner">
+        <p class="eyebrow">Reference</p>
+        <h2 class="page-title">Fare Slab Chart</h2>
+        <p style="color:#64748B;font-size:0.88rem;margin-bottom:18px">Smart Card & NCMC: 5% off (peak) or 10% off (non-peak). Tokens have no discount.</p>
+        <div class="table-wrap"><table class="fare-table" id="fareTable"></table></div>
+      </div>
+    </div>
+
   </div>
 </div>
+
+<!-- TICKET MODAL -->
+<div class="modal-bg" id="ticketModal" style="display:none" onclick="closeModal(event)">
+  <div class="modal-box" id="ticketBox">
+    <div class="ticket-header">
+      <div class="ticket-brand">🚇 Namma Metro</div>
+      <div class="ticket-sub-brand">Bengaluru Metro Rail Corporation Ltd.</div>
+    </div>
+    <div class="ticket-body">
+      <div class="ticket-route"><span id="tkSrc">–</span><span class="tk-arr">→</span><span id="tkDst">–</span></div>
+      <div class="ticket-meta">
+        <div class="tm-item"><div class="tm-lbl">Passengers</div><div class="tm-val" id="tkPax">–</div></div>
+        <div class="tm-item"><div class="tm-lbl">Total Fare</div><div class="tm-val" id="tkFare">–</div></div>
+        <div class="tm-item"><div class="tm-lbl">Stops</div><div class="tm-val" id="tkStops">–</div></div>
+        <div class="tm-item"><div class="tm-lbl">Ticket Type</div><div class="tm-val" id="tkCard">–</div></div>
+      </div>
+      <div class="ticket-date" id="tkDate">–</div>
+    </div>
+    <div class="ticket-foot">
+      <button class="primary-btn" onclick="window.print()">Print Ticket</button>
+      <button class="ghost-btn" onclick="document.getElementById('ticketModal').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 <script src="data.js"></script>
 <script src="services/GraphService.js"></script>
 <script src="services/FareService.js"></script>
